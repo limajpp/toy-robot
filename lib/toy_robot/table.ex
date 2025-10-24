@@ -19,6 +19,6 @@ defmodule ToyRobot.Table do
     false
   """
   def valid_position?(%Table{x_max: x_max, y_max: y_max}, %{x: x, y: y}) do
-    nil
+    x >= 0 and x <= x_max and y >= 0 and y <= y_max
   end
 end
