@@ -32,30 +32,57 @@ defmodule ToyRobot.CommandInterpreter do
     ]
   """
   def interpret(commands) do
-    nil
+    Enum.map(commands, fn command -> do_interpret(command) end)
   end
 
   defp do_interpret("PLACE " <> rest) do
-    nil
+    parts = String.split(rest, ",")
+
+    if length(parts) == 3 do
+      x_str = Enum.at(parts, 0)
+      y_str = Enum.at(parts, 1)
+      facing_str = Enum.at(parts, 2)
+
+      x_int = Integer.parse(x_str)
+      y_int = Integer.parse(y_str)
+      is_direction_valid = facing_str == "NORTH" or
+        facing_str == "SOUTH" or
+        facing_str == "EAST" or
+        facing_str == "WEST"
+
+      if x_int != :error and y_int != :error and is_direction_valid do
+        {x, _} = x_int
+        {y, _} = y_int
+
+        downcase_facing = String.downcase(facing_str)
+        facing_atom = String.to_atom(downcase_facing)
+
+        {:place, %{x: x, y: y, facing: facing_atom}}
+      else
+        {:invalid, "PLACE " <> rest}
+      end
+    else
+      {:invalid, "PLACE " <> rest}
+    end
   end
 
   defp do_interpret("MOVE") do
-    nil
+    :move
   end
 
   defp do_interpret("LEFT") do
-    nil
+    :turn_left
   end
 
   defp do_interpret("RIGHT") do
-    nil
+    :turn_right
   end
 
   defp do_interpret("REPORT") do
-    nil
+    :report
   end
 
   defp do_interpret(command) do
-    nil
+    {:invalid, command}
   end
 end
